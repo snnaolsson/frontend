@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('menuForm').reset();
         document.getElementById('menuId').value = '';
     });
+    document.getElementById('addNewBookingButton').addEventListener('click', () => {
+        document.getElementById('bookingFormContainer').style.display = 'block';
+        document.getElementById('bookingForm').reset();
+        document.getElementById('bookingId').value = '';  // Se till att bookingId sätts till ett tomt värde
+    });
 
     document.getElementById('menuForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -58,9 +63,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const bookingId = document.getElementById('bookingId').value;
+        const name = document.getElementById('bookingName').value;
+        const phone = document.getElementById('bookingPhone').value;
+        const email = document.getElementById('bookingEmail').value;
+        const date = document.getElementById('bookingDate').value;
+        const time = document.getElementById('bookingTime').value;
+        const guests = document.getElementById('bookingGuests').value;
+        const specialRequests = document.getElementById('bookingSpecialRequests').value;
+        const token = localStorage.getItem('token');
+       
+
+        //Kombinerar datum och tid för att konvertera till ISO 1601-format som databasen har för att kunna skapa bokningar frn gränssnittet
+        const datetime = new Date(`${date}T${time}:00Z`).toISOString();
+        console.log(datetime);
+        const booking = { name, phone, email, date:datetime, time, guests, specialRequests };
+        console.log(booking);
+
+        let url = 'http://localhost:3005/api/bookings';
+        let method = 'POST';
+
+        if (bookingId) {
+            url += `/${bookingId}`;
+            method = 'PUT';
+        }
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+        });
+
+        if (response.ok) {
+            fetchBookings(token);
+            document.getElementById('bookingFormContainer').style.display = 'none';
+            showNotification(bookingId ? 'Booking updated successfully!' : 'New booking added!');
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to save booking:', response.status);
+            console.error('Error details:', errorData);
+     
+        }
+    });
+
     document.getElementById('cancelButton').addEventListener('click', () => {
         document.getElementById('menuFormContainer').style.display = 'none';
     });
+    document.getElementById('cancelBookingButton').addEventListener('click', () => {
+        document.getElementById('bookingFormContainer').style.display = 'none';
+    });
+
+
 
 
 async function fetchMenuItems(token) {
@@ -183,6 +241,7 @@ async function deleteMenuItem(id) {
 
         if (response.ok) {
             fetchMenuItems(token);
+            showNotification('Menu item deleted successfully!');
 
 
         } else {
@@ -216,11 +275,12 @@ function renderBookings(bookings) {
         const bookingDiv = document.createElement('div');
         bookingDiv.classList.add('booking-item-div');
         bookingDiv.id = `booking-${booking._id}`;
+        const bookingDate = new Date(booking.date).toLocaleDateString('sv-SE');
         bookingDiv.innerHTML = `
             <h3>Bokning för ${booking.name}</h3>
             <p>E-mail: ${booking.email}</p>
             <p>Phone: ${booking.phone}</p>
-            <p>Datum: ${booking.date}</p>
+            <p>Datum: ${bookingDate}</p>
             <p>Tid: ${booking.time}</p>
             <p>Gäster: ${booking.guests}</p>
             <p>Speciella önskemål: ${booking.specialRequests}</p>
@@ -307,7 +367,7 @@ function editBooking(id) {
 
             if (response.ok) {
                 fetchBookings(token);  // Uppdatera listan med bokningar efter ändringen
-                showNotification(menuId ? 'Menyalternativet har uppdaterats!' : 'Nytt menyalternativ har lagts till!');
+                showNotification('Booking updated successfully!');
             } else {
                 showNotification('Något gick fel. Försök igen.', false);
                 console.error('Failed to update booking:', response.status);
