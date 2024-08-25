@@ -108,6 +108,13 @@ footer {
     font-size: 0.9rem;
 }
 
+#admin-site{
+    color: #d8d8d8;
+    text-decoration: none;
+}
+#admin-site:hover{
+    color: #A4C3D1;
+}
 /*STARTSIDA*/
 
 #about{
@@ -254,9 +261,6 @@ footer {
     font-size: 1.5rem;
     font-weight: 100;
 }
-.menu-container p{
-    text-indent: 50px;
-}
 
 #menu h2 {
     font-size: 50px;
@@ -272,6 +276,13 @@ footer {
     color: #CCCCCC;
     margin-top: 10px;
     line-height: 1.6;
+    text-indent: 50px;
+}
+.package-p{
+    line-height: 2;
+    word-spacing: 2px;
+    margin: 1%;
+    padding-bottom: 1%;
 }
 
 /*BOKNINGSSIDA*/

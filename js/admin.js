@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const menuItem = { name, description, category };
 
-        let url = 'http://localhost:3005/api/menu';
+        let url = 'https://backend-yzf1.onrender.com/api/menu';
         let method = 'POST';
 
         if (menuId) {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const booking = { name, phone, email, date:datetime, time, guests, specialRequests };
         console.log(booking);
 
-        let url = 'http://localhost:3005/api/bookings';
+        let url = 'https://backend-yzf1.onrender.com/api/bookings';
         let method = 'POST';
 
         if (bookingId) {
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 async function fetchMenuItems(token) {
-    const response = await fetch('http://localhost:3005/api/menu', {
+    const response = await fetch('https://backend-yzf1.onrender.com/api/menu', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -156,7 +156,7 @@ function renderMenuItems(menuItems) {
 
 function editMenuItem(id) {
     const token = localStorage.getItem('token');
-    fetch(`http://localhost:3005/api/menu/${id}`, {
+    fetch(`https://backend-yzf1.onrender.com/api/menu/${id}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -198,7 +198,7 @@ function editMenuItem(id) {
 
             const updatedItem = { name: updatedName, description: updatedDescription, category: updatedCategory };
 
-            const response = await fetch(`http://localhost:3005/api/menu/${item._id}`, {
+            const response = await fetch(`https://backend-yzf1.onrender.com/api/menu/${item._id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -232,7 +232,7 @@ function cancelEdit(id) {
 async function deleteMenuItem(id) {
     if (confirm('Är du säker på att du vill ta bort denna menyartikel?')) {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3005/api/menu/${id}`, {
+        const response = await fetch(`https://backend-yzf1.onrender.com/api/menu/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -252,7 +252,7 @@ async function deleteMenuItem(id) {
 
 
 async function fetchBookings(token) {
-    const response = await fetch('http://localhost:3005/api/bookings', {
+    const response = await fetch('https://backend-yzf1.onrender.com/api/bookings', {
         method: 'GET',
         headers: { 
             'Authorization': `Bearer ${token}`,
@@ -294,7 +294,7 @@ function renderBookings(bookings) {
 
 function editBooking(id) {
     const token = localStorage.getItem('token');
-    fetch(`http://localhost:3005/api/bookings/${id}`, {
+    fetch(`https://backend-yzf1.onrender.com/bookings/${id}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -356,7 +356,7 @@ function editBooking(id) {
                 specialRequests: updatedSpecialRequests
             };
 
-            const response = await fetch(`http://localhost:3005/api/bookings/${booking._id}`, {
+            const response = await fetch(`https://backend-yzf1.onrender.com/api/bookings/${booking._id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -391,7 +391,7 @@ function cancelBookingEdit(id) {
 async function deleteBooking(id) {
     if (confirm('Är du säker på att du vill ta bort denna bokning?')) {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3005/api/bookings/${id}`, {
+        const response = await fetch(`https://backend-yzf1.onrender.com/api/bookings/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -400,6 +400,7 @@ async function deleteBooking(id) {
 
         if (response.ok) {
             fetchBookings(token);  // Uppdatera listan med bokningar efter radering
+            showNotification(`Booking deleted successfully!`);
         } else {
             console.error('Failed to delete booking:', response.status);
         }
